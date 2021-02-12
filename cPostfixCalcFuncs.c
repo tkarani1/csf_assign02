@@ -14,6 +14,7 @@ long addPositive(long a, long b) {
 }
 
 /*
+ *  Casey
  * fatalError - print an error message an exit with an exit code of 1.
  * Prints a message of the form "Error: <message text>" to standard output.
  * Does not return!
@@ -26,6 +27,7 @@ void fatalError(const char *msg) {
 }
 
 /*
+ * Casey
  * isSpace - tests a character code to determine whether or not it
  * is a space character.
  *
@@ -43,6 +45,7 @@ int isSpace(int c) {
 }
 
 /*
+ *  Casey
  * isDigit - tests a character code to determine whether it is one
  * of the digits '0' through '9'
  *
@@ -57,6 +60,7 @@ int isDigit(int c) {
 }
 
 /*
+ *  Casey
  * skipws - skips any whitespace characters (as determined by isSpace)
  * at the beginning of a C character string.
  *
@@ -73,6 +77,7 @@ const char *skipws(const char *s) {
 }
 
 /*
+ *  Trisha
  * tokenType - return the token type (TOK_INT, TOK_OP, or TOK_UNKNOWN)
  * of the token at the beginning of given C character string.
  *
@@ -88,6 +93,7 @@ int tokenType(const char *s) {
 }
 
 /*
+ *  Trisha
  * consumeInt - consume one or more digit characters at the beginning
  * of given C character string, convert them to an integer value, and
  * store the integer value in the long (64 bit signed integer)
@@ -107,6 +113,7 @@ const char *consumeInt(const char *s, long *pval) {
 }
 
 /*
+ *  Trisha
  * consumeOp - consume an operator character from the beginning of the
  * given C character string.
  *
@@ -123,6 +130,7 @@ const char *consumeOp(const char *s, int *op) {
 }
 
 /*
+ *  Casey
  * stackPush - push a long (64 bit signed integer) value onto the stack.
  * Calls the fatalError function if the stack is full.
  * A full stack contains MAX_STACK (20) values.
@@ -143,6 +151,7 @@ void stackPush(long stack[], long *count, long val) {
 }
 
 /*
+ *   Trisha
  * stackPop - pops a long (64 bit signed integer) value from the stack.
  * Calls the fatalError function if the stack is empty.
  * If a value is successfully popped off the stack, the count should
@@ -161,6 +170,7 @@ long stackPop(long stack[], long *count) {
 }
 
 /*
+ *  Casey
  * evalOp - evaluate a computation by applying an operator to two operands.
  *
  * Params:
