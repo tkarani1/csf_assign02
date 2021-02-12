@@ -1,0 +1,9 @@
+/*.s
+/*.o
+/cPostfixCalc
+/cTests
+/asmPostfixCalc
+/asmTests
+/depend.mak
+/solution.zip
+/asmPostfixCalc2
