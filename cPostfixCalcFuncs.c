@@ -85,7 +85,7 @@ const char *skipws(const char *s) {
 }
 
 /*
- *  Trisha K. 
+ *  Trisha  
  * tokenType - return the token type (TOK_INT, TOK_OP, or TOK_UNKNOWN)
  * of the token at the beginning of given C character string.
  *
@@ -97,8 +97,24 @@ const char *skipws(const char *s) {
  *   the token type
  */
 int tokenType(const char *s) {
-  /* TODO: implement */
+	char c = *s; 
+	switch (c) {
+		case '+':
+		case '-': 
+		case '*':
+		case '/': 
+			return TOK_OP; 
+			break; 
+		default: 
+			if (c >= '0' && c <= '9') {
+				return TOK_INT; 
+			} 
+			break;
+	}
+
+	return TOK_UNKNOWN; 
 }
+
 
 /*
  *  Trisha
@@ -160,7 +176,7 @@ void stackPush(long stack[], long *count, long val) {
   }
   stack[*count] = val;
   (*count)++;
-  return;
+  return; //is this necessary?
 }
 
 /*
