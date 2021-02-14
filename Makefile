@@ -36,7 +36,7 @@ cPostfixCalc : cPostfixCalcMain.o cPostfixCalcFuncs.o cPostfixCalcEval.o
 	gcc -o $@ $(LDFLAGS) cPostfixCalcMain.o cPostfixCalcFuncs.o cPostfixCalcEval.o
 
 # Unit test program for C functions
-cTests : cTests.o tctest.o cPostfixCalcFuncs.o
+cTests : cTests.o tctest.o cPostfixCalcFuncs.o cPostfixCalcEval.o 
 	gcc -o $@ $(LDFLAGS) cTests.o tctest.o cPostfixCalcFuncs.o cPostfixCalcEval.o
 
 # Assembly language version of postfix calculator
