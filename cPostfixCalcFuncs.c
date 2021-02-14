@@ -25,7 +25,7 @@ long addPositive(long a, long b) {
  */
 void fatalError(const char *msg) {
   /* TODO: implement */
-  printf("Error: %s", msg);
+  // printf("Error: %s", msg);
   // return(1); ??
 }
 
@@ -196,8 +196,7 @@ const char *consumeOp(const char *s, int *op) {
  */
 void stackPush(long stack[], long *count, long val) {
   if (*count >= MAX_STACK) {
-    //fatalError("stack full!");
-	printf("test for seg fault");
+    fatalError("stack full!");
   } else {
 	stack[*count] = val;
   	(*count)++;
