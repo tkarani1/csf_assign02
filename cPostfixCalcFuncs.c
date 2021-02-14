@@ -197,10 +197,11 @@ const char *consumeOp(const char *s, int *op) {
 void stackPush(long stack[], long *count, long val) {
   if (*count >= MAX_STACK) {
     fatalError("stack full!");
+  } else {
+	stack[*count] = val;
+  	(*count)++;
   }
-  stack[*count] = val;
-  (*count)++;
-  return; //is this necessary?
+  return;
 }
 
 /*
