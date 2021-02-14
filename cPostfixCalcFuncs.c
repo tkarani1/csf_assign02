@@ -196,7 +196,8 @@ const char *consumeOp(const char *s, int *op) {
  */
 void stackPush(long stack[], long *count, long val) {
   if (*count >= MAX_STACK) {
-    fatalError("stack full!");
+    //fatalError("stack full!");
+	printf("test for seg fault");
   } else {
 	stack[*count] = val;
   	(*count)++;
