@@ -42,7 +42,7 @@ void fatalError(const char *msg) {
  *   or carriage return, but it's only required to handle
  *   spaces and tabs)
  */
-int isSpace(int c) {
+int isSpace(int c)  { //typecast c???
   return c == 32 || c == 9;
 }
 
@@ -133,7 +133,28 @@ int tokenType(const char *s) {
  *   pointer to the first character in the string that is not a digit
  */
 const char *consumeInt(const char *s, long *pval) {
-  /* TODO: implement */
+	//question: does consume mean that we remove the digits ???
+	//unknown token type? no non-ints?
+	//take the int as is or add values?
+	int start = 0; 
+	for (; start<strlen(s); start++) {
+		if (tokenType(s + start) == TOK_INT) {
+			continue; 
+		} else {
+			break;
+		}
+	}
+
+	char * numString = (char *)calloc(start+2, sizeof(char));
+	memcpy(numString, s, start+1); 
+	numString[start+1] = '\0'; 
+	*pval = atoi(numString); 
+	destroy(numString); 
+	if (start == strlen(s)) {
+		return -1; 
+	} 
+
+	return *(s+start); 
 }
 
 /*
