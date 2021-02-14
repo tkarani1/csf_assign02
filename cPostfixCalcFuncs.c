@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cPostfixCalc.h"
+#include <string.h>
 
 /*
  * Example function (see tests in cTests.c)
@@ -246,4 +247,5 @@ long evalOp(int op, long left, long right) {
 	default :
 		return 0L;
   }
+  return 0L;
 }
