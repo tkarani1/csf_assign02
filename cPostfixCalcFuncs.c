@@ -24,9 +24,9 @@ long addPositive(long a, long b) {
  *   msg - description of the error which occurred
  */
 void fatalError(const char *msg) {
-  /* TODO: implement */
-  // printf("Error: %s", msg);
-  // return(1); ??
+  printf("Error: ");
+  printf(msg);
+  exit(1);
 }
 
 /*
