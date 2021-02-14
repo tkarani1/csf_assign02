@@ -24,6 +24,8 @@ long addPositive(long a, long b) {
  */
 void fatalError(const char *msg) {
   /* TODO: implement */
+  printf("Error: %s", msg);
+  // return(1); ??
 }
 
 /*
@@ -41,7 +43,7 @@ void fatalError(const char *msg) {
  *   spaces and tabs)
  */
 int isSpace(int c) {
-  /* TODO: implement */
+  return c == 32 || c == 9;
 }
 
 /*
@@ -56,7 +58,7 @@ int isSpace(int c) {
  *   1 if c is a digit, 0 otherwise
  */
 int isDigit(int c) {
-  /* TODO: implement */
+  return c >= '0' && c <= '9';
 }
 
 /*
@@ -73,7 +75,13 @@ int isDigit(int c) {
  *   is reached
  */
 const char *skipws(const char *s) {
-  /* TODO: implement */
+  while (isSpace(*s)) {
+    s++;
+  }
+  if (*s == '\n') {
+    return NULL;
+  }
+  return s;
 }
 
 /*
@@ -147,7 +155,12 @@ const char *consumeOp(const char *s, int *op) {
  *   nothing
  */
 void stackPush(long stack[], long *count, long val) {
-  /* TODO: implement */
+  if (*count >= MAX_STACK) {
+    fatalError("stack full!");
+  }
+  stack[*count] = val;
+  (*count)++;
+  return;
 }
 
 /*
@@ -182,5 +195,8 @@ long stackPop(long stack[], long *count) {
  *   the result of applying the operator to the operands
  */
 long evalOp(int op, long left, long right) {
-  /* TODO: implement */
+  switch(op) {
+    case 1:
+    
+  }
 }
