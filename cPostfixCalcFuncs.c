@@ -85,7 +85,7 @@ const char *skipws(const char *s) {
 }
 
 /*
- *  Trisha
+ *  Trisha K. 
  * tokenType - return the token type (TOK_INT, TOK_OP, or TOK_UNKNOWN)
  * of the token at the beginning of given C character string.
  *
