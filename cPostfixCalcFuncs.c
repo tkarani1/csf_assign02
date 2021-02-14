@@ -149,12 +149,12 @@ const char *consumeInt(const char *s, long *pval) {
 	memcpy(numString, s, start+1); 
 	numString[start+1] = '\0'; 
 	*pval = atoi(numString); 
-	destroy(numString); 
+	free(numString); 
 	if (start == strlen(s)) {
 		return -1; 
 	} 
 
-	return *(s+start); 
+	return *(s+start); //make a new string? 
 }
 
 /*
@@ -171,7 +171,9 @@ const char *consumeInt(const char *s, long *pval) {
  *   a pointer to the second character of s
  */
 const char *consumeOp(const char *s, int *op) {
-  /* TODO: implement */
+	char firstOp = *s; 
+	*op = atoi(firstOp); 
+	return *(s+1);
 }
 
 /*
