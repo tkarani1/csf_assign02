@@ -235,7 +235,15 @@ long stackPop(long stack[], long *count) {
  */
 long evalOp(int op, long left, long right) {
   switch(op) {
-    case 1:
-    
+    case '+' :
+		return left + right;
+    case '-' :
+		return left - right;
+	case '*' :
+		return left * right;
+	case '/' :
+		return left / right;
+	default :
+		return 0L;
   }
 }
