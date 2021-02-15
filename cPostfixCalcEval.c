@@ -19,5 +19,32 @@ long eval(const char *s) {
   /* Note: this function should be implemented by calling functions
    * declared in cPostfixCalc.h and defined in cPostfixCalcFuncs.c
    */
+
+	s = skipws(s); 
+
+	int op; 
+	long pval; 
+	long stack [MAX_STACK]; 	
+	long count; 
+	long left; 
+	long right; 
+	while (*s != '\0') {
+		int token = tokenType(s); 
+		if (token == TOK_OP) {
+			s = consumeOp(s, &op);
+			right = stackPop(stack, &count); 
+			left = stackPop(stack, &count); 
+		     	pval = evalOp(op, left, right); 
+			stackPush(stack, &count, pval); 		
+
+		} else if (token == TOK_INT) {
+			s = consumeInt(s, &pval); 
+			stackPush(stack, &count, pval); 
+			continue; 
+		} else { //TOK_UNKNOWN case
+		       fatalError("Invalid token in string"); 
+		}
+ 		s = skipws(s); 		
+	}
   return 0L;
 }

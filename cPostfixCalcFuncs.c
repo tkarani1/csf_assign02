@@ -107,7 +107,7 @@ int tokenType(const char *s) {
 			return TOK_OP; 
 			break; 
 		default: 
-			if (c >= '0' && c <= '9') {
+			if (isDigit(c)) {
 				return TOK_INT; 
 			} 
 			break;
@@ -139,18 +139,20 @@ const char *consumeInt(const char *s, long *pval) {
 	//take the int as is or add values?
 	int start = 0; 
 	for (; start<strlen(s); start++) {
-		if (tokenType(s + start) == TOK_INT) {
+		if (isDigit(*(s+start))) {
 			continue; 
 		} else {
 			break;
 		}
-	}
-
+	} 
+	//use powers of ten instead?
+/*	
 	char * numString = (char *)calloc(start+2, sizeof(char));
 	memcpy(numString, s, start+1); 
 	numString[start+1] = '\0'; 
 	*pval = atoi(numString); 
 	free(numString); 
+*/
 	if (start == strlen(s)) {
 		return -1; 
 	} 
@@ -237,13 +239,16 @@ long stackPop(long stack[], long *count) {
  */
 long evalOp(int op, long left, long right) {
   switch(op) {
-    case '+' :
+    	case '+' :
 		return left + right;
-    case '-' :
+    	case '-' :
 		return left - right;
 	case '*' :
 		return left * right;
 	case '/' :
+		if (right == 0) {
+			fatalError("Division by Zero"); 
+		}
 		return left / right;
 	default :
 		return 0L;
