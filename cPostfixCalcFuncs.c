@@ -176,7 +176,7 @@ const char *consumeInt(const char *s, long *pval) {
 const char *consumeOp(const char *s, int *op) {
 	char firstOp = *s; 
 	*op = atoi(firstOp); 
-	return *(s+1);
+	return *(s+1); // shouldn't we just add 1 to the pointer, without dereferencing? (don't want to change string)
 }
 
 /*
@@ -207,7 +207,7 @@ void stackPush(long stack[], long *count, long val) {
 }
 
 /*
- *   Trisha
+ *   Casey
  * stackPop - pops a long (64 bit signed integer) value from the stack.
  * Calls the fatalError function if the stack is empty.
  * If a value is successfully popped off the stack, the count should
@@ -222,7 +222,11 @@ void stackPush(long stack[], long *count, long val) {
  *   the value popped from the stack
  */
 long stackPop(long stack[], long *count) {
-  /* TODO: implement */
+  if (*count < 0L) {
+	  fatalError("no more operands on stack!");
+  }
+  (*count)--;
+  return stack[*count + 1];
 }
 
 /*

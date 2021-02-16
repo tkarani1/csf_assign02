@@ -28,15 +28,14 @@ long eval(const char *s) {
 	long count; 
 	long left; 
 	long right; 
-	while (*s != '\0') {
+	while (s != NULL && *s != '\0') {  
 		int token = tokenType(s); 
 		if (token == TOK_OP) {
 			s = consumeOp(s, &op);
 			right = stackPop(stack, &count); 
 			left = stackPop(stack, &count); 
-		     	pval = evalOp(op, left, right); 
+		    pval = evalOp(op, left, right); 
 			stackPush(stack, &count, pval); 		
-
 		} else if (token == TOK_INT) {
 			s = consumeInt(s, &pval); 
 			stackPush(stack, &count, pval); 
@@ -45,6 +44,9 @@ long eval(const char *s) {
 		       fatalError("Invalid token in string"); 
 		}
  		s = skipws(s); 		
+	}
+	if (count != 1) {
+		fatalError("Stack should end up with a single value");
 	}
   return 0L;
 }

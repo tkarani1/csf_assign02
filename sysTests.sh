@@ -46,7 +46,10 @@ expect 42 '6 7 *'
 expect 42 '6 6 6 6 6 6 6 + + + + + +'
 expect_error '2 2'
 expect_error '1 *'
-# TODO: add more tests...
+expect -12 '2 5 - 4 *'  # negative numbers on stack
+expect 4 '8 9-5+'  # "negative numbers" in expression
+expect error '         '
+expect error ''
 
 #######################################################################
 # End of tests
