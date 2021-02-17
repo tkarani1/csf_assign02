@@ -79,7 +79,7 @@ const char *skipws(const char *s) {
   while (*s != '\0' && isSpace(*s)) {
     s++;
   }
-  if (*s == '\n') {
+  if (*s == '\0') {
     return NULL;
   }
   return s;
