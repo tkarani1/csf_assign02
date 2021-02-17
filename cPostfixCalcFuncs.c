@@ -211,11 +211,11 @@ void stackPush(long stack[], long *count, long val) {
  *   the value popped from the stack
  */
 long stackPop(long stack[], long *count) {
-  if (*count < 0L) {
+  if (*count <= 0L) {
 	  fatalError("no more operands on stack!");
   }
   (*count)--;
-  return stack[*count + 1];
+  return stack[*count];
 }
 
 /*
