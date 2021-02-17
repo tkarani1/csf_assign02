@@ -134,9 +134,8 @@ int tokenType(const char *s) {
  *   pointer to the first character in the string that is not a digit
  */
 const char *consumeInt(const char *s, long *pval) {
-	//question: does consume mean that we remove the digits ???
-	//unknown token type? no non-ints?
 	//take the int as is or add values?
+	
 	int start = 0; 
 	for (; start<strlen(s); start++) {
 		if (isDigit(*(s+start))) {
@@ -145,21 +144,9 @@ const char *consumeInt(const char *s, long *pval) {
 			break;
 		}
 	} 
-	//use powers of ten instead?
 
-	// +/- a '0'
-	/*	
-	char * numString = (char *)calloc(start+2, sizeof(char));
-	memcpy(numString, s, start+1); 
-	numString[start+1] = '\0'; 
-	*pval = atoi(numString); 
-	free(numString); 
-*/
-	if (start == strlen(s)) {
-		return -1; 
-	} 
-
-	return *(s+start); //make a new string? 
+	sscanf(s, "%ld", pval);
+	return s+start; 
 }
 
 /*
