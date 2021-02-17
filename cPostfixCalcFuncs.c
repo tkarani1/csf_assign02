@@ -76,7 +76,7 @@ int isDigit(int c) {
  *   is reached
  */
 const char *skipws(const char *s) {
-  while (isSpace(*s)) {
+  while (*s != '\0' && isSpace(*s)) {
     s++;
   }
   if (*s == '\n') {
@@ -169,7 +169,7 @@ const char *consumeOp(const char *s, int *op) {
 }
 
 /*
- *  Casey
+ *  Casey 
  * stackPush - push a long (64 bit signed integer) value onto the stack.
  * Calls the fatalError function if the stack is full.
  * A full stack contains MAX_STACK (20) values.
@@ -196,7 +196,7 @@ void stackPush(long stack[], long *count, long val) {
 }
 
 /*
- *   Casey
+ *   Casey & Trisha
  * stackPop - pops a long (64 bit signed integer) value from the stack.
  * Calls the fatalError function if the stack is empty.
  * If a value is successfully popped off the stack, the count should
