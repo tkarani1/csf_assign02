@@ -146,7 +146,9 @@ const char *consumeInt(const char *s, long *pval) {
 		}
 	} 
 	//use powers of ten instead?
-/*	
+
+	// +/- a '0'
+	/*	
 	char * numString = (char *)calloc(start+2, sizeof(char));
 	memcpy(numString, s, start+1); 
 	numString[start+1] = '\0'; 
@@ -175,8 +177,8 @@ const char *consumeInt(const char *s, long *pval) {
  */
 const char *consumeOp(const char *s, int *op) {
 	char firstOp = *s; 
-	*op = atoi(firstOp); 
-	return *(s+1); // shouldn't we just add 1 to the pointer, without dereferencing? (don't want to change string)
+	*op = (int) firstOp; 
+	return s+1;
 }
 
 /*
