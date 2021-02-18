@@ -43,7 +43,7 @@ void fatalError(const char *msg) {
  *   or carriage return, but it's only required to handle
  *   spaces and tabs)
  */
-int isSpace(int c)  { //typecast c???
+int isSpace(int c)  { 
   return c == 32 || c == 9;
 }
 
