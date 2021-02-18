@@ -46,6 +46,7 @@ addPositive:
 	ret
 
 /*
+ * Casey
  * fatalError - print an error message an exit with an exit code of 1.
  * Prints a message of the form "Error: <message text>" to standard output.
  * Does not return!
@@ -75,9 +76,18 @@ fatalError:
 	.globl isSpace
 isSpace:
 	/* TODO: implement */
+	cmpl $32, %edi               /* compare val to 32 (space) */
+	je .LreturnTrue              /* if equal, jump to return true */
+	cmpl $9, %edi                /* compare val to 9 (tab) */
+	je .LreturnTrue             /* if equal, jump to return true */
+	movl $0 %eax                /* fall through to return false */
+	ret
+.LreturnTrue
+	movl $1, %eax
 	ret
 
 /*
+ *  Trisha
  * isDigit - tests a character code to determine whether it is one
  * of the digits '0' through '9'
  *
@@ -93,6 +103,7 @@ isDigit:
 	ret
 
 /*
+ *  Casey
  * skipws - skips any whitespace characters (as determined by isSpace)
  * at the beginning of a C character string.
  *
@@ -110,6 +121,7 @@ skipws:
 	ret
 
 /*
+ *  Trisha
  * tokenType - return the token type (TOK_INT, TOK_OP, or TOK_UNKNOWN)
  * of the token at the beginning of given C character string.
  *
@@ -126,6 +138,7 @@ tokenType:
 	ret
 
 /*
+ * Trisha
  * consumeInt - consume one or more digit characters at the beginning
  * of given C character string, convert them to an integer value, and
  * store the integer value in the long (64 bit signed integer)
@@ -146,6 +159,7 @@ consumeInt:
 	ret
 
 /*
+ *  Casey
  * consumeOp - consume an operator character from the beginning of the
  * given C character string.
  *
@@ -163,6 +177,7 @@ consumeOp:
 	ret
 
 /*
+ *  Casey
  * stackPush - push a long (64 bit signed integer) value onto the stack.
  * Calls the fatalError function if the stack is full.
  * A full stack contains MAX_STACK (20) values.
@@ -184,6 +199,7 @@ stackPush:
 	ret
 
 /*
+ *  Trisha
  * stackPop - pops a long (64 bit signed integer) value from the stack.
  * Calls the fatalError function if the stack is empty.
  * If a value is successfully popped off the stack, the count should
@@ -203,6 +219,7 @@ stackPop:
 	ret
 
 /*
+ *  Trisha
  * evalOp - evaluate a computation by applying an operator to two operands.
  *
  * Params:
