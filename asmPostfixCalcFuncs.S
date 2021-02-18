@@ -12,6 +12,7 @@
 	.section .rodata
 
 eNegativeValue: .string "Negative value"
+errorMsgStart: .string "Error: "
 
 /* TODO: add other string constants and other read-only data here */
 
@@ -58,7 +59,15 @@ addPositive:
 fatalError:
 	/* TODO: implement */
 	/* note that this function should not return */
-	ret
+	subq $8, %rsp               /* align stack */
+	movq %rdi, %r10             /*  temporarily store msg pointer in r10 */
+	movq $errorMsgStart, %rdi   /* move "Error: " pointer to 1st arg register */
+	call printf
+	movq %r10, %rdi             /* move msg pointer to 1st arg register */
+	call printf
+	addq $8, %rsp               /* align stack - but is this necessary, since we have another call? */
+	movq $1, %rdi
+	call exit
 
 /*
  * isSpace - tests a character code to determine whether or not it
@@ -118,6 +127,10 @@ isDigit:
 	.globl skipws
 skipws:
 	/* TODO: implement */
+.LwhileTop:
+	movl (%rdi), %rdi
+	call isSpace
+	cmpl %eax $1
 	ret
 
 /*
