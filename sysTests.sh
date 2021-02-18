@@ -44,12 +44,16 @@ expect_error() {
 expect 5 '2 3 +'
 expect 42 '6 7 *'
 expect 42 '6 6 6 6 6 6 6 + + + + + +'
-expect_error '2 2'
-expect_error '1 *'
+expect_error '2 2'      # elements left on stack
+expect_error '1 *'      # stack underflow
+expect_error '*/'       # empty stack
+expect_error '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1'            # stack overflow!
 expect -12 '2 5 - 4 *'  # negative numbers on stack
-expect 4 '8 9-5+'  # "negative numbers" in expression
-expect error '         '
-expect error ''
+expect 4 '8 9-5+'       # "negative numbers" in expression
+expect_error '	   '    # expression is only whitespace
+expect_error ''         # expression is an empty string
+expect_error '6 0 /'    # division by 0
+expect 20 '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 +++++++++++++++++++'  # fill stack, then expty it
 
 #######################################################################
 # End of tests

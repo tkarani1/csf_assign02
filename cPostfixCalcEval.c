@@ -14,14 +14,7 @@
  *   the result of evaluating the expression
  */
 long eval(const char *s) {
-  /* TODO: implement */
-
-  /* Note: this function should be implemented by calling functions
-   * declared in cPostfixCalc.h and defined in cPostfixCalcFuncs.c
-   */
-
 	s = skipws(s); 
-
 	int op = '0'; 
 	long stack [MAX_STACK]; 	
 	long pval = 0L, count = 0L, left = 0L, right = 0L;

@@ -1,3 +1,16 @@
+Casey Levitt
+Trisha Karani
+
+Casey implemented fatalError(), isSpace(), isDigit(), skipws(), stackPush(), evalOp(), and
+	wrote the system tests.
+
+Trisha implemented tokenType(), consumeInt(), and consumeOp().
+
+We implemented stackPop() and eval() together.
+
+
+
+
 
 
 Tests to Include: 
