@@ -301,4 +301,14 @@ void testEvalInvalid(TestObjs *objs) {
 		/* good, expected failure */
 		printf("good, stack underflow handled...");
 	}
+
+	/* operator with insufficient operands */
+        if (sigsetjmp(exitBuf, 1) == 0) {
+                eval("-17 + 4 - 6");
+                FAIL("stack underflow not handled");
+        } else {
+                /* good, expected failure */
+                printf("good, stack underflow handled...");
+        }
+
 }

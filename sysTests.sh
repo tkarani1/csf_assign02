@@ -54,7 +54,8 @@ expect_error '	   '    # expression is only whitespace
 expect_error ''         # expression is an empty string
 expect_error '6 0 /'    # division by 0
 expect 20 '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 +++++++++++++++++++'  # fill stack, then expty it
-
+expect_error '-5 + -5 +1' #operator when stack empty
+expect_error '5 % 5' # % not defined
 #######################################################################
 # End of tests
 #######################################################################
