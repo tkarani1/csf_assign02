@@ -80,9 +80,9 @@ isSpace:
 	je .LreturnTrue              /* if equal, jump to return true */
 	cmpl $9, %edi                /* compare val to 9 (tab) */
 	je .LreturnTrue             /* if equal, jump to return true */
-	movl $0 %eax                /* fall through to return false */
+	movl $0, %eax                /* fall through to return false */
 	ret
-.LreturnTrue
+.LreturnTrue:
 	movl $1, %eax
 	ret
 
