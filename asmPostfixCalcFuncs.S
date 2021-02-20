@@ -228,7 +228,7 @@ stackPush:
 	jg .Lpush                       /* if max >= size, jump to push */
 	movq $errorMsgStackFull, %rdi   /* move address of error message for fatalError */
 	call fatalError                 /* should not return */
-.Lpush
+.Lpush:
 	movq (%rsi), %r10				/* store stack length in r10 */
 	movq %rdx, (%rdi, %r10, 8)		/* push given value to the top of the stack */
 	incq (%rsi)						/* incriment stack count */
