@@ -59,13 +59,15 @@ addPositive:
 fatalError:
 	/* TODO: implement */
 	/* note that this function should not return */
-	subq $8, %rsp               /* align stack */
-	movq %rdi, %r10             /*  temporarily store msg pointer in r10 */
+	pushq %r12					/* callee-saved, also aligns stack pointer */
+	//subq $8, %rsp               
+	movq %rdi, %r12             /*  temporarily store msg pointer in r12 */
 	movq $errorMsgStart, %rdi   /* move "Error: " pointer to 1st arg register */
 	call printf
-	movq %r10, %rdi             /* move msg pointer to 1st arg register */
+	movq %r12, %rdi             /* move msg pointer to 1st arg register */
 	call printf
-	addq $8, %rsp               /* align stack - but is this necessary, since we have another call? */
+	popq %r12                   /* restore r12 & align stack - but is this necessary, since we have another call? */
+	// addq $8, %rsp               
 	movq $1, %rdi
 	call exit
 
@@ -127,10 +129,18 @@ isDigit:
 	.globl skipws
 skipws:
 	/* TODO: implement */
+	pushq %r12               /* preserve the value of r12, aligns stack pointer */
+	movq %rdi, %r12          /* store string pointer in r12 */
 .LwhileTop:
-	movl (%rdi), %rdi
-	call isSpace
-	cmpl %eax $1
+	movzbl (%r12), %edi       /* put first char in rdi - is movzbl right? */
+	call isSpace              /* is this char a space? */
+	cmpl $1, %eax             /* did it return true? */
+	jne .Ldone                /* if not whitespace, done */
+	incq %r12                 /* advance string pointer */
+	jmp .LwhileTop
+.Ldone
+	movq %r12, %rax           /* put string pointer in return register */
+	popq %r12
 	ret
 
 /*
@@ -186,7 +196,10 @@ consumeInt:
  */
 	.globl consumeOp
 consumeOp:
-	/* TODO: implement */
+	movl (%rdi), %r10d      /* store operator temporarily */
+	movl %r10d, (%rsi)		/* store operator in rsi's memory address */
+	addq $1, %rdi			/* advance string pointer */
+	movq %rdi, %rax
 	ret
 
 /*
