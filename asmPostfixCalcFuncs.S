@@ -13,6 +13,7 @@
 
 eNegativeValue: .string "Negative value"
 errorMsgStart: .string "Error: "
+errorMsgStackFull: .string "stack full!"
 
 /* TODO: add other string constants and other read-only data here */
 
@@ -221,7 +222,17 @@ consumeOp:
  */
 	.globl stackPush
 stackPush:
-	/* TODO: implement */
+	subq $8, %rsp				    /* align stack pointer */
+	movq MAX_STACK, %r10       		/* store max stack value in r10 */
+	cmpq (%rsi), %r10          		/* compare max (r10) to stack size (rsi) */
+	jg .Lpush                       /* if max >= size, jump to push */
+	movq $errorMsgStackFull, %rdi   /* move address of error message for fatalError */
+	call fatalError                 /* should not return */
+.Lpush
+	movq (%rsi), %r10				/* store stack length in r10 */
+	movq %rdx, (%rdi, %r10, 8)		/* push given value to the top of the stack */
+	incq (%rsi)						/* incriment stack count */
+	addq $8, %rsp					/* align stack pointer */
 	ret
 
 /*
