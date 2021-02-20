@@ -196,7 +196,7 @@ consumeInt:
  */
 	.globl consumeOp
 consumeOp:
-	movl (%rdi), %r10d      /* store operator temporarily */
+	movzbl (%rdi), %r10d      /* store operator temporarily */
 	movl %r10d, (%rsi)		/* store operator in rsi's memory address */
 	addq $1, %rdi			/* advance string pointer */
 	movq %rdi, %rax
