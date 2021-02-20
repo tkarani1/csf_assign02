@@ -60,15 +60,13 @@ addPositive:
 fatalError:
 	/* TODO: implement */
 	/* note that this function should not return */
-	pushq %r12					/* callee-saved, also aligns stack pointer */
-	//subq $8, %rsp               
+	pushq %r12					/* callee-saved, also aligns stack pointer */           
 	movq %rdi, %r12             /*  temporarily store msg pointer in r12 */
 	movq $errorMsgStart, %rdi   /* move "Error: " pointer to 1st arg register */
 	call printf
 	movq %r12, %rdi             /* move msg pointer to 1st arg register */
 	call printf
-	popq %r12                   /* restore r12 & align stack - but is this necessary, since we have another call? */
-	// addq $8, %rsp               
+	// popq %r12                   /* restore r12 & align stack - but is this necessary, since we have another call? */             
 	movq $1, %rdi
 	call exit
 
@@ -224,7 +222,7 @@ consumeOp:
 stackPush:
 	subq $8, %rsp				    /* align stack pointer */
 	movq (%rsi), %r10       		/* store current stack count in r10 */
-	cmpq MAX_STACK, %r10          	/* compare current size (r10) to max stack */
+	cmpq $MAX_STACK, %r10          	/* compare current size (r10) to max stack */
 	jl .Lpush                       /* if curSize < max, jump to push */
 	movq $errorMsgStackFull, %rdi   /* move address of error message for fatalError */
 	call fatalError                 /* should not return */
