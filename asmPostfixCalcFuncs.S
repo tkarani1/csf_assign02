@@ -138,7 +138,7 @@ skipws:
 	jne .Ldone                /* if not whitespace, done */
 	incq %r12                 /* advance string pointer */
 	jmp .LwhileTop
-.Ldone
+.Ldone:
 	movq %r12, %rax           /* put string pointer in return register */
 	popq %r12
 	ret
