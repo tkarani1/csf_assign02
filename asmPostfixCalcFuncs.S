@@ -223,9 +223,9 @@ consumeOp:
 	.globl stackPush
 stackPush:
 	subq $8, %rsp				    /* align stack pointer */
-	movq MAX_STACK, %r10       		/* store max stack value in r10 */
-	cmpq (%rsi), %r10          		/* compare max (r10) to stack size (rsi) */
-	jg .Lpush                       /* if max >= size, jump to push */
+	movq (%rsi), %r10       		/* store current stack count in r10 */
+	cmpq MAX_STACK, %r10          	/* compare current size (r10) to max stack */
+	jl .Lpush                       /* if curSize < max, jump to push */
 	movq $errorMsgStackFull, %rdi   /* move address of error message for fatalError */
 	call fatalError                 /* should not return */
 .Lpush:
