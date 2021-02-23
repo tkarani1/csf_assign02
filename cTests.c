@@ -189,14 +189,26 @@ void testSkipws(TestObjs *objs) {
 }
 
 void testTokenType(TestObjs *objs) {
-	ASSERT(TOK_INT == tokenType("2 3 +"));
+	
+	ASSERT(TOK_OP == tokenType("+")); 
+	ASSERT(TOK_OP == tokenType("/")); 
+	ASSERT(TOK_OP == tokenType("*")); 
+	ASSERT(TOK_OP == tokenType("-")); 
+	ASSERT(TOK_UNKNOWN == tokenType("$")); 
+	ASSERT(TOK_INT == tokenType("0")); 
+	ASSERT(TOK_INT == tokenType("9"));
+       	ASSERT(TOK_INT == tokenType("4"));
+	ASSERT(TOK_OP == tokenType("-5"));        
+/*	ASSERT(TOK_INT == tokenType("2 3 +"));
 	ASSERT(TOK_INT == tokenType("123 4 +"));
 	ASSERT(TOK_OP == tokenType("+ 2 3"));
 	ASSERT(TOK_OP == tokenType("- 2 3"));
 	ASSERT(TOK_OP == tokenType("* 2 3"));
 	ASSERT(TOK_OP == tokenType("/ 2 3"));
+*/
 	ASSERT(TOK_UNKNOWN == tokenType("abc"));
 	ASSERT(TOK_UNKNOWN == tokenType("?"));
+	
 }
 
 void testConsumeInt(TestObjs *objs) {

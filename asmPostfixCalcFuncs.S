@@ -109,7 +109,6 @@ isSpace:
  */
 	.globl isDigit
 isDigit:
-	/* TODO: implement */
 	cmpl $48, %edi 	/* compare c to 48 ('0') */
 	jl .LreturnFalse
 	cmp $57, %edi /* compare c to 57 ('9') */
@@ -165,6 +164,28 @@ skipws:
 	.globl tokenType
 tokenType:
 	/* TODO: implement */
+	movzb (%rdi), %r11 	/*which registers to use? char register?*/
+	cmp $42, %r11 /* is '*' */
+	je .LisOp
+        cmp $43, %r11 /* is '+' */
+        je .LisOp
+        cmp $45, %r11 /* is '-' */
+        je .LisOp
+        cmp $47, %r11 /* is '/' */
+        je .LisOp
+       	movzb (%rdi), %edi       /* put first char in rdi - is movzbl right? */
+        call isDigit              /* is this char a space? */
+        cmp $1, %eax             /* did it return true? */
+        je .LisInt                /* if not whitespace, done */
+	jmp .LisUn
+.LisInt: 
+	movl $0, %eax
+	ret
+.LisOp:
+	movl $1, %eax
+	ret
+.LisUn: 
+	movl $2, %eax
 	ret
 
 /*
