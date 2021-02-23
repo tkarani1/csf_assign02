@@ -175,6 +175,8 @@ void testIsDigit(TestObjs *objs) {
 	ASSERT(!isDigit(' '));
 	ASSERT(!isDigit('\t'));
 	ASSERT(!isDigit('a'));
+	ASSERT(!isDigit('/'));
+	ASSERT(!isDigit(':'));
 }
 
 void testSkipws(TestObjs *objs) {

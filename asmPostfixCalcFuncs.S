@@ -110,6 +110,14 @@ isSpace:
 	.globl isDigit
 isDigit:
 	/* TODO: implement */
+	cmpl $48, %edi 	/* compare c to 48 ('0') */
+	jl .LreturnFalse
+	cmp $57, %edi /* compare c to 57 ('9') */
+	jg .LreturnFalse
+	movl $1, %eax 	/*if c not < 0 or > 9, it is digit */
+	ret
+.LreturnFalse:
+	movl $0, %eax
 	ret
 
 /*
