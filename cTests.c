@@ -197,15 +197,15 @@ void testTokenType(TestObjs *objs) {
 	ASSERT(TOK_UNKNOWN == tokenType("$")); 
 	ASSERT(TOK_INT == tokenType("0")); 
 	ASSERT(TOK_INT == tokenType("9"));
-       	ASSERT(TOK_INT == tokenType("4"));
+    ASSERT(TOK_INT == tokenType("4"));
 	ASSERT(TOK_OP == tokenType("-5"));        
-/*	ASSERT(TOK_INT == tokenType("2 3 +"));
+	ASSERT(TOK_INT == tokenType("2 3 +"));
 	ASSERT(TOK_INT == tokenType("123 4 +"));
 	ASSERT(TOK_OP == tokenType("+ 2 3"));
 	ASSERT(TOK_OP == tokenType("- 2 3"));
 	ASSERT(TOK_OP == tokenType("* 2 3"));
 	ASSERT(TOK_OP == tokenType("/ 2 3"));
-*/
+
 	ASSERT(TOK_UNKNOWN == tokenType("abc"));
 	ASSERT(TOK_UNKNOWN == tokenType("?"));
 	
@@ -293,7 +293,7 @@ void testEvalOp(TestObjs *objs) {
 	ASSERT(-10L == evalOp('-', 3L, 13L));
 	ASSERT(77L == evalOp('*', 11L, 7L));
 	ASSERT(3 == evalOp('/', 17L, 5L));
-	/*
+	
 	expectedExit = 1; 
 	if (sigsetjmp(exitBuf, 1) == 0) {
                 evalOp('/', 12L, 0L);
@@ -302,7 +302,7 @@ void testEvalOp(TestObjs *objs) {
                 // good, expected failure 
                 printf("good, divide by 0 handled...");
         } 
-*/
+
 
 }
 
