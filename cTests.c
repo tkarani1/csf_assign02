@@ -282,6 +282,17 @@ void testEvalOp(TestObjs *objs) {
 	ASSERT(-10L == evalOp('-', 3L, 13L));
 	ASSERT(77L == evalOp('*', 11L, 7L));
 	ASSERT(3 == evalOp('/', 17L, 5L));
+	/*
+	expectedExit = 1; 
+	if (sigsetjmp(exitBuf, 1) == 0) {
+                evalOp('/', 12L, 0L);
+                FAIL("Divide by 0 not handled");
+        } else {
+                // good, expected failure 
+                printf("good, divide by 0 handled...");
+        } 
+*/
+
 }
 
 void testEval(TestObjs *objs) {

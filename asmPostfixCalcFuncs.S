@@ -163,7 +163,6 @@ skipws:
  */
 	.globl tokenType
 tokenType:
-	/* TODO: implement */
 	movzb (%rdi), %r11 	/*which registers to use? char register?*/
 	cmp $42, %r11 /* is '*' */
 	je .LisOp
@@ -296,7 +295,38 @@ stackPop:
  */
 	.globl evalOp
 evalOp:
+        movq %rdi, %r11      /*which registers to use? char register?*/
+	movq %rsi, %r10
+	movq %rdx, %r9
+        cmp $42, %r11 /* is '*' */
+	je .LMult
+        cmp $43, %r11 /* is '+' */
+        je .LAdd
+        cmp $45, %r11 /* is '-' */
+        je .LSub
+        cmp $47, %r11 /* is '/' */
+        je .LDiv
+.LAdd:				/*quotient? remainder? overflow? where mult/div stored? */ 
+	addq %r10, %r9
+	movq %r9, %rax
 	ret
+.LMult: 
+	imulq %r10, %r9
+	movq %r9, %rax
+	ret
+.LSub:
+	subq %r9, %r10
+	movq %r10, %rax
+        ret
+.LDiv: 
+	cmp $0, %r9
+	je .LDivByZero
+	movq $0, %rdx
+	movq %r10, %rax
+	idivq %r9
+        ret
+.LDivByZero:
+	call fatalError
 
 /* vim:ft=gas:
  */

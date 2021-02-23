@@ -136,9 +136,9 @@ int tokenType(const char *s) {
 const char *consumeInt(const char *s, long *pval) {
 	//take the int as is or add values?
 	
-	int start = 0; 
-	for (; start<strlen(s); start++) {
-		if (isDigit(*(s+start))) {
+	int i = 0; 
+	for (; i<strlen(s); i++) {
+		if (isDigit(*(s+i))) {
 			continue; 
 		} else {
 			break;
@@ -146,7 +146,7 @@ const char *consumeInt(const char *s, long *pval) {
 	} 
 
 	sscanf(s, "%ld", pval);
-	return s+start; 
+	return i+s; 
 }
 
 /*
