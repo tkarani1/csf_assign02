@@ -289,7 +289,7 @@ stackPop:
 	jg .Lpop
 	movq $errorMsgStackEmpty, %rdi
 	call fatalError
-.Lpop
+.Lpop:
 	subq $1, %r11 	/* decrement count */
 	movq %r11, (%rsi) /*move r11 value to count */
 	movq (%r12, %r11, 8),%rax 
@@ -310,7 +310,7 @@ stackPop:
  */
 	.globl evalOp
 evalOp:               // no function calls, don't need to align stack pointer
-    movq %edi, %r11d      /*which registers to use? char register?*/
+    movl %edi, %r11d      /*which registers to use? char register?*/
 	movq %rsi, %r10
 	movq %rdx, %r9
     cmp $42, %r11d /* is '*' */
