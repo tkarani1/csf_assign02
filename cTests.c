@@ -250,6 +250,7 @@ void testPushFull(TestObjs *objs) {
 	for (long i = 1L; i <= MAX_STACK; i++) {
 		stackPush(objs->values, &objs->count, i);
 	}
+	ASSERT(MAX_STACK == objs->count);
 
 	/* pushing another item should cause a fatal error */
 	expectedExit = 1;
@@ -263,18 +264,28 @@ void testPushFull(TestObjs *objs) {
 }
 
 void testPop(TestObjs *objs) {
-	stackPush(objs->values, &objs->count, 1L);
-	stackPush(objs->values, &objs->count, 2L);
-	stackPush(objs->values, &objs->count, 3L);
-	stackPush(objs->values, &objs->count, 4L);
-	stackPush(objs->values, &objs->count, 5L);
+	stackPush(objs->values, &objs->count, 6L);
+	stackPush(objs->values, &objs->count, 7L);
+	stackPush(objs->values, &objs->count, 8L);
+	stackPush(objs->values, &objs->count, 9L);
+	stackPush(objs->values, &objs->count, 10L);
 
-	ASSERT(5L == stackPop(objs->values, &objs->count));
-	ASSERT(4L == stackPop(objs->values, &objs->count));
-	ASSERT(3L == stackPop(objs->values, &objs->count));
-	ASSERT(2L == stackPop(objs->values, &objs->count));
-	ASSERT(1L == stackPop(objs->values, &objs->count));
+	ASSERT(10L == stackPop(objs->values, &objs->count));
+	ASSERT(9L == stackPop(objs->values, &objs->count));
+	ASSERT(8L == stackPop(objs->values, &objs->count));
+	ASSERT(7L == stackPop(objs->values, &objs->count));
+	ASSERT(6L == stackPop(objs->values, &objs->count));
 	ASSERT(0 == objs->count);
+	/* popping another item should cause a fatal error */
+        expectedExit = 1;
+        if (sigsetjmp(exitBuf, 1) == 0) {
+                stackPop(objs->values, &objs->count);
+                FAIL("pop onto empty stack didn't fail");
+        } else {
+                /* good, push failed */
+                printf("pop onto empty stack failed, good...");
+        }
+
 }
 
 void testEvalOp(TestObjs *objs) {

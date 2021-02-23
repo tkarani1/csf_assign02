@@ -178,7 +178,7 @@ tokenType:
         je .LisInt                /* if not whitespace, done */
 	jmp .LisUn
 .LisInt: 
-	movl $0, %eax
+	movl $0, %eax /* return TOK_OP, etc??? */
 	ret
 .LisOp:
 	movl $1, %eax
@@ -278,7 +278,14 @@ stackPush:
  */
 	.globl stackPop
 stackPop:
-	/* TODO: implement */
+	movq (%rsi), %r11	/* align stack pointer??? */
+	cmp $0, %r11
+	jle fatalError
+	
+	subq $1, %r11 	/* decrement count */
+	movq %r11, (%rsi) /*move r11 value to count */
+	
+	movq (%rdi, %r11, 8),%rax 
 	ret
 
 /*
