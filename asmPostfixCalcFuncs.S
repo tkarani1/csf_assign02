@@ -14,6 +14,8 @@
 eNegativeValue: .string "Negative value"
 errorMsgStart: .string "Error: "
 errorMsgStackFull: .string "stack full!"
+errorMsgStackEmpty: .string "no more operands on stack!"
+errorMsgDivByZero: .string "division by zero!"
 
 /* TODO: add other string constants and other read-only data here */
 
@@ -163,8 +165,8 @@ skipws:
  */
 	.globl tokenType
 tokenType:
-	movzb (%rdi), %r11 	/*which registers to use? char register?*/
-	cmp $42, %r11 /* is '*' */
+	movzbq (%rdi), %r11 	/*which registers to use? char register?*/ // we can put it as an long in r11
+	cmp $42, %r11 /* is '*' */      // indenting? lol
 	je .LisOp
         cmp $43, %r11 /* is '+' */
         je .LisOp
@@ -172,19 +174,21 @@ tokenType:
         je .LisOp
         cmp $47, %r11 /* is '/' */
         je .LisOp
-       	movzb (%rdi), %edi       /* put first char in rdi - is movzbl right? */
-        call isDigit              /* is this char a space? */
+		subq $8, %rsp              /* align stack pointer */
+       	movzbl (%rdi), %edi       /* put first char in rdi - is movzbl right? */
+        call isDigit              /* is this char a digit? */
+		addq $8, %rsp             /* restore stack pointer */
         cmp $1, %eax             /* did it return true? */
         je .LisInt                /* if not whitespace, done */
 	jmp .LisUn
 .LisInt: 
-	movl $0, %eax /* return TOK_OP, etc??? */
+	movl $TOK_INT, %eax /* return TOK_OP, etc??? */
 	ret
 .LisOp:
-	movl $1, %eax
+	movl $TOK_OP, %eax
 	ret
 .LisUn: 
-	movl $2, %eax
+	movl $TOK_UNKNOWN, %eax
 	ret
 
 /*
@@ -278,14 +282,18 @@ stackPush:
  */
 	.globl stackPop
 stackPop:
-	movq (%rsi), %r11	/* align stack pointer??? */
-	cmp $0, %r11
-	jle fatalError
-	
+	pushq %r12         /* using a callee saved register and aligning stack pointer */
+	movq %rdi, %r12     /* put address of stack in %r12 */
+	movq (%rsi), %r11	/* put stack size in %r11 */
+	cmp $0, %r11    // cannot rely on %r11 or %rsi to have the same value after call, but fatal error won't return!
+	jg .Lpop
+	movq $errorMsgStackEmpty, %rdi
+	call fatalError
+.Lpop
 	subq $1, %r11 	/* decrement count */
 	movq %r11, (%rsi) /*move r11 value to count */
-	
-	movq (%rdi, %r11, 8),%rax 
+	movq (%r12, %r11, 8),%rax 
+	popq %r12
 	ret
 
 /*
@@ -293,26 +301,26 @@ stackPop:
  * evalOp - evaluate a computation by applying an operator to two operands.
  *
  * Params:
- *   op - the operator ('+', '-', '*', or '/')
- *   left - the left operand
- *   right - the right operand
+ *   op - the operator ('+', '-', '*', or '/')  (int)
+ *   left - the left operand   (long)
+ *   right - the right operand   (long)
  *
  * Returns:
  *   the result of applying the operator to the operands
  */
 	.globl evalOp
-evalOp:
-        movq %rdi, %r11      /*which registers to use? char register?*/
+evalOp:               // no function calls, don't need to align stack pointer
+    movq %edi, %r11d      /*which registers to use? char register?*/
 	movq %rsi, %r10
 	movq %rdx, %r9
-        cmp $42, %r11 /* is '*' */
+    cmp $42, %r11d /* is '*' */
 	je .LMult
-        cmp $43, %r11 /* is '+' */
-        je .LAdd
-        cmp $45, %r11 /* is '-' */
-        je .LSub
-        cmp $47, %r11 /* is '/' */
-        je .LDiv
+    cmp $43, %r11d /* is '+' */
+    je .LAdd
+    cmp $45, %r11d /* is '-' */
+    je .LSub
+    cmp $47, %r11d /* is '/' */
+    je .LDiv
 .LAdd:				/*quotient? remainder? overflow? where mult/div stored? */ 
 	addq %r10, %r9
 	movq %r9, %rax
@@ -331,8 +339,10 @@ evalOp:
 	movq $0, %rdx
 	movq %r10, %rax
 	idivq %r9
-        ret
+    ret
 .LDivByZero:
+	movq $errorMsgDivByZero, %rdi
+	subq $8, %rsp
 	call fatalError
 
 /* vim:ft=gas:
