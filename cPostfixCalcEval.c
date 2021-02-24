@@ -24,13 +24,13 @@ long eval(const char *s) {
 			s = consumeOp(s, &op);
 			right = stackPop(stack, &count); 
 			left = stackPop(stack, &count); 
-	 	    	pval = evalOp(op, left, right); 
+	 	    pval = evalOp(op, left, right); 
 			stackPush(stack, &count, pval); 		
 		} else if (token == TOK_INT) {
 			s = consumeInt(s, &pval); 
 			stackPush(stack, &count, pval); 
 		} else { //TOK_UNKNOWN case
-		       fatalError("Invalid token in string"); 
+		    fatalError("Invalid token in string"); 
 		}
  		s = skipws(s); 		
 	}

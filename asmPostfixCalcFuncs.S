@@ -136,7 +136,6 @@ isDigit:
  */
 	.globl skipws
 skipws:
-	/* TODO: implement */
 	pushq %r12               /* preserve the value of r12, aligns stack pointer */
 	movq %rdi, %r12          /* store string pointer in r12 */
 .LwhileTop:
@@ -147,9 +146,16 @@ skipws:
 	incq %r12                 /* advance string pointer */
 	jmp .LwhileTop
 .Ldone:
+	cmpb $0, (%r12)          /* check if r12 points to null terminator */
+	je .LreturnNull 
 	movq %r12, %rax           /* put string pointer in return register */
-	popq %r12
+	popq %r12                /*  restore %r12 */
 	ret
+.LreturnNull:
+	movq $0, %rax            /* put NULL (0) in return register */
+	popq %r12                /*  restore %r12 */
+	ret
+
 
 /*
  *  Trisha
