@@ -112,8 +112,8 @@ int main(int argc, char **argv) {
 	TEST(testPushFull);
 	TEST(testPop);
 	TEST(testEvalOp);
-	TEST(testEval);
-	TEST(testEvalInvalid);
+//	TEST(testEval);
+//	TEST(testEvalInvalid);
 
 	TEST_FINI();
 }

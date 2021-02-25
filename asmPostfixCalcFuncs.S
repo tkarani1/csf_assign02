@@ -16,6 +16,7 @@ errorMsgStart: .string "Error: "
 errorMsgStackFull: .string "stack full!"
 errorMsgStackEmpty: .string "no more operands on stack!"
 errorMsgDivByZero: .string "division by zero!"
+intInputFormat: .string "%ld"
 
 /* TODO: add other string constants and other read-only data here */
 
@@ -217,15 +218,23 @@ tokenType:
 consumeInt:
         pushq %r12               /* preserve the value of r12, aligns stack pointer */
         movq %rdi, %r12          /* store string pointer in r12 */
+	pushq %r13
+	movq %rsi, %r13		/* save pval pointer into %r13 */
+	movq $intInputFormat, %rsi /* save sscanf input format into %rsi */
+	movq %r13, %rdx		/* save pval pointer into third argument %rdx */
+	subq $8, %rsp		/* align stack pointer */
+	call sscanf 		/* save int into pval (in %r13) */
 .LwhileInt:
         movzbl (%r12), %edi       /* put first char in rdi */
         call isDigit              /* is this char a space? */
         cmpl $0, %eax             /* did it return false? */
-        jne .LdoneFinding                /* if not digit, jump to done */
+        je .LdoneFinding                /* if not digit, jump to done */
         incq %r12                 /* advance string pointer */
-        jmp .LwhileTop
+        jmp .LwhileInt
 .LdoneFinding:
+	addq $8, %rsp 		/* align stack pointer */
         movq %r12, %rax           /* put string pointer in return register */
+	popq %r13		/* restore %r13 */
         popq %r12                /*  restore %r12 */
         ret
 /*
