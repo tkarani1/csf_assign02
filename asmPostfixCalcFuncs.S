@@ -180,15 +180,15 @@ tokenType:
         je .LisOp
         cmp $47, %r11 /* is '/' */
         je .LisOp
-		subq $8, %rsp              /* align stack pointer */
+	subq $8, %rsp              /* align stack pointer */
        	movzbl (%rdi), %edi       /* put first char in rdi - is movzbl right? */
-        call isDigit              /* is this char a digit? */
-		addq $8, %rsp             /* restore stack pointer */
+        call isDigit              /* use isDigit to check if char is a number*/
+	addq $8, %rsp             /* restore stack pointer */
         cmp $1, %eax             /* did it return true? */
-        je .LisInt                /* if not whitespace, done */
-	jmp .LisUn
+        je .LisInt                /* if isDigit true, jump to .LisInt to return TOK_INT*/
+	jmp .LisUn		/* if not operator or digit, token is undefined */
 .LisInt: 
-	movl $TOK_INT, %eax /* return TOK_OP, etc??? */
+	movl $TOK_INT, %eax 
 	ret
 .LisOp:
 	movl $TOK_OP, %eax
@@ -215,9 +215,19 @@ tokenType:
  */
 	.globl consumeInt
 consumeInt:
-	/* TODO: implement */
-	ret
-
+        pushq %r12               /* preserve the value of r12, aligns stack pointer */
+        movq %rdi, %r12          /* store string pointer in r12 */
+.LwhileInt:
+        movzbl (%r12), %edi       /* put first char in rdi */
+        call isDigit              /* is this char a space? */
+        cmpl $0, %eax             /* did it return false? */
+        jne .LdoneFinding                /* if not digit, jump to done */
+        incq %r12                 /* advance string pointer */
+        jmp .LwhileTop
+.LdoneFinding:
+        movq %r12, %rax           /* put string pointer in return register */
+        popq %r12                /*  restore %r12 */
+        ret
 /*
  *  Casey
  * consumeOp - consume an operator character from the beginning of the
@@ -327,7 +337,7 @@ evalOp:               // no function calls, don't need to align stack pointer
     je .LSub
     cmp $47, %r11d /* is '/' */
     je .LDiv
-.LAdd:				/*quotient? remainder? overflow? where mult/div stored? */ 
+.LAdd:			
 	addq %r10, %r9
 	movq %r9, %rax
 	ret
