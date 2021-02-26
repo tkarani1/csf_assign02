@@ -35,8 +35,31 @@ eval:
         movq %rsp, %rbp       /* pointer to allocated memory on stack */
         subq $4, %rsp         /* align stack pointer */
         movq $0, 160(%rbp)    /* set count = 0 */
-        cmp $0, %r12          /* is the string pointer NULL? */
+	jmp .LwhilePostfix
+
+.LwhilePostfix:
+        cmpq $0, %r12          /* is the string pointer NULL? */
         je .Ldone
+	cmpb $0,(%r12)		/*is the string pointing to NULL terminator */
+	je .Ldone
+	movq %r12, %rdi		/* string pointer is first argument of tokenType */ 	
+	call tokenType
+	cmpl $TOK_OP, %eax	/* check if tokenType from result is an operator */
+	je .LOp 
+	cmpl $TOK_INT, %eax	/*check if tokenType from result is a number */
+	je .LInt
+	cmpl $TOK_UNKNOWN, %eax	/*check if tokenType is unkown */
+	je .LUnknown
+
+.LOp:
+	movq %r12, %rdi		/* string pointer is first argument of consumeOp */
+	leaq %
+	call skipws
+	.LwhilePostFix	
+
+.LInt:
+
+.LUnknown:
 
 .Ldone:
         cmp $1, 160(%rbp)     /* is count == 1? */
