@@ -41,7 +41,7 @@ cTests : cTests.o tctest.o cPostfixCalcFuncs.o cPostfixCalcEval.o
 
 # Assembly language version of postfix calculator
 # using cPostfixCalcMain.c
-asmPostfixCalc : asmPostfixCalcMain.o asmPostfixCalcFuncs.o asmPostfixCalcEval.o
+asmPostfixCalc : cPostfixCalcMain.o asmPostfixCalcFuncs.o asmPostfixCalcEval.o
 	gcc -o $@ $(LDFLAGS) cPostfixCalcMain.o asmPostfixCalcFuncs.o asmPostfixCalcEval.o
 
 # Assembly language version of postfix calculator
