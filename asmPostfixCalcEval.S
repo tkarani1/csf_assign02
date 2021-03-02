@@ -79,6 +79,7 @@ eval:
 	jmp .LwhilePostfix	
 
 .LInt:         // r12 (string ptr) should aready be in rdi
+	movq %r12, %rdi          /* pass address of string to first argument register */
         leaq 184(%rbp), %rsi     /* pass address of pval in second argument register */
         call consumeInt
         movq %rax, %r12          /* update string pointer after int was read */
