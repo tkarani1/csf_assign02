@@ -27,10 +27,10 @@ errorMsgInvalidString: .string "invalid expression"
  */
 	.globl eval
 eval:
-        pushq %r12            /* store callee-saved %r12 and align stack pointer */
-	pushq %rbp            /* store callee-saved %rbp  */
+        pushq %rbp            /* store callee-saved %rbp  */
 	movq %rdi, %rdi
 	call skipws           /* string pointer should already be in %rdi */
+        pushq %r12            /* store callee-saved %r12 and align stack pointer */
         movq %rax, %r12       /* store whitespace-less string pointer in %r12 */
         subq $196, %rsp       /* memory for: stack (20 longs), count, left, right, pval, (longs), and op (int) */
         movq %rsp, %rbp       /* pointer to allocated memory on stack */
