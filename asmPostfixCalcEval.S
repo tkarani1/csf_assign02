@@ -28,9 +28,10 @@ errorMsgInvalidString: .string "invalid expression"
 	.globl eval
 eval:
         pushq %r12            /* store callee-saved %r12 and align stack pointer */
-        call skipws           /* string pointer should already be in %rdi */
+	pushq %rbp            /* store callee-saved %rbp  */
+	movq %rdi, %rdi
+	call skipws           /* string pointer should already be in %rdi */
         movq %rax, %r12       /* store whitespace-less string pointer in %r12 */
-        pushq %rbp            /* store callee-saved %rbp  */
         subq $196, %rsp       /* memory for: stack (20 longs), count, left, right, pval, (longs), and op (int) */
         movq %rsp, %rbp       /* pointer to allocated memory on stack */
         subq $4, %rsp         /* align stack pointer */
@@ -75,7 +76,7 @@ eval:
         movq %r12, %rdi          /* move string pointer to first agument for skipws */
 	call skipws
         movq %rax, %r12          /* move updated string pointer back to %r12 */
-	.LwhilePostFix	
+	jmp .LwhilePostfix	
 
 .LInt:         // r12 (string ptr) should aready be in rdi
         leaq 184(%rbp), %rsi     /* pass address of pval in second argument register */
@@ -95,7 +96,7 @@ eval:
         // what happens here?
 
 .Ldone:
-        cmp $1, 160(%rbp)     /* is count == 1? */
+        cmpq $1, 160(%rbp)     /* is count == 1? */
         je .Lsuccess          /* if yes, success! */
         movq $errorMsgSingleVal, %rdi
         call fatalError      /* if not, call fatalError */
