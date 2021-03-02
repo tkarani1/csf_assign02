@@ -54,7 +54,27 @@ eval:
 .LOp:
 	movq %r12, %rdi		/* string pointer is first argument of consumeOp */
 	leaq 192(%rbp), %rsi    /* put address of op in second argument register */
+        call consumeOp
+        movq %rax, %r12          /* update string pointer after op was read */
+        movq %rbp, %rdi          /* stack is first parameter for stackPop */
+        leaq 160(%rbp), %rsi     /* address of count is second parameter */
+        call stackPop
+        movq %rax, 176(%rbp)     /* move the popped operand into right */
+        movq %rbp, %rdi          /* stack is first parameter for stackPop */
+        leaq 160(%rbp), %rsi     /* address of count is second parameter */
+        call stackPop
+        movq %rax, 168(%rbp)     /* move the popped operand into left */
+        movl 192(%rbp), %edi     /* move operator into first argument register */
+        movq 168(%rbp), %rsi     /* move left operand into second argument register */
+        movq 176(%rbp), %rdx     /* move right operand into third argument register */
+        call evalOp              /* result is in %rax */
+        movq %rbp, %rdi          /* stack is first argument of stackPush */
+        leaq 160(%rbp), %rsi     /* address of count is second argument of stackPush */
+        movq %rax, %rdx          /* result of evalOp gets pushed onto stack! */
+        call stackPush 
+        movq %r12, %rdi          /* move string pointer to first agument for skipws */
 	call skipws
+        movq %rax, %r12          /* move updated string pointer back to %r12 */
 	.LwhilePostFix	
 
 .LInt:         // r12 (string ptr) should aready be in rdi
@@ -65,7 +85,9 @@ eval:
         leaq 160(%rbp), %rsi     /* address of stack count is second argument */
         movq 184(%rbp), %rdx     /* long value to push onto stack is third argument */
         call stackPush
-        // call to skipws - make a label for it?
+        movq %r12, %rdi          /* move string pointer to first agument for skipws */
+	call skipws
+        movq %rax, %r12          /* move updated string pointer back to %r12 */
         jmp .LwhilePostfix
 .LUnknown:
         movq $errorMsgInvalidString, %rdi
