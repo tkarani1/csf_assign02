@@ -1,3 +1,4 @@
+
 /*
  * postfix calculator (assembly language version)
  * function implementation
@@ -11,6 +12,7 @@
 
 	.section .rodata
 
+/* string constants */
 eNegativeValue: .string "Negative value"
 errorMsgStart: .string "Error: "
 errorMsgStackFull: .string "stack full!"
@@ -18,7 +20,6 @@ errorMsgStackEmpty: .string "no more operands on stack!"
 errorMsgDivByZero: .string "division by zero!"
 intInputFormat: .string "%ld"
 
-/* TODO: add other string constants and other read-only data here */
 
 	.section .text
 
@@ -61,19 +62,17 @@ addPositive:
  */
 	.globl fatalError
 fatalError:
-	/* TODO: implement */
 	/* note that this function should not return */
-	pushq %r12					/* callee-saved, also aligns stack pointer */           
-	movq %rdi, %r12             /*  temporarily store msg pointer in r12 */
-	movq $errorMsgStart, %rdi   /* move "Error: " pointer to 1st arg register */
+	pushq %r12			/* callee-saved, also aligns stack pointer */           
+	movq %rdi, %r12            	/*  temporarily store msg pointer in r12 */
+	movq $errorMsgStart, %rdi   	/* move "Error: " pointer to 1st arg register */
 	call printf
-	movq %r12, %rdi             /* move msg pointer to 1st arg register */
+	movq %r12, %rdi             	/* move msg pointer to 1st arg register */
 	call printf
-	// popq %r12                   /* restore r12 & align stack - but is this necessary, since we have another call? */             
 	movq $1, %rdi
 	call exit
 
-/*
+/* Casey
  * isSpace - tests a character code to determine whether or not it
  * is a space character.
  *
@@ -88,12 +87,11 @@ fatalError:
  */
 	.globl isSpace
 isSpace:
-	/* TODO: implement */
-	cmpl $32, %edi               /* compare val to 32 (space) */
-	je .LreturnTrue              /* if equal, jump to return true */
-	cmpl $9, %edi                /* compare val to 9 (tab) */
-	je .LreturnTrue             /* if equal, jump to return true */
-	movl $0, %eax                /* fall through to return false */
+	cmpl $32, %edi         	/* compare c to 32 (space) */
+	je .LreturnTrue       	/* if equal, jump to return true */
+	cmpl $9, %edi          	/* compare val to 9 (tab) */
+	je .LreturnTrue       	/* if equal, jump to return true */
+	movl $0, %eax          	/* fall through to return false */
 	ret
 .LreturnTrue:
 	movl $1, %eax
@@ -112,14 +110,14 @@ isSpace:
  */
 	.globl isDigit
 isDigit:
-	cmpl $48, %edi 	/* compare c to 48 ('0') */
-	jl .LreturnFalse
-	cmp $57, %edi /* compare c to 57 ('9') */
-	jg .LreturnFalse
-	movl $1, %eax 	/*if c not < 0 or > 9, it is digit */
+	cmpl $48, %edi 		/* compare c to 48 ('0') */
+	jl .LreturnFalse	/* if c is less than '0', return false */
+	cmp $57, %edi 		/* compare c to 57 ('9') */
+	jg .LreturnFalse	/* if c is greater than '9', return false */
+	movl $1, %eax 		/*if c not < 0 or > 9, it is digit */
 	ret
 .LreturnFalse:
-	movl $0, %eax
+	movl $0, %eax		/* return 0 for false */
 	ret
 
 /*
@@ -137,25 +135,25 @@ isDigit:
  */
 	.globl skipws
 skipws:
-	pushq %r12               /* preserve the value of r12, aligns stack pointer */
-	movq %rdi, %r12          /* store string pointer in r12 */
+	pushq %r12     		/* preserve the value of r12, aligns stack pointer */
+	movq %rdi, %r12       	/* store string pointer in r12 */
 .LwhileTop:
-	movzbl (%r12), %edi       /* put first char in rdi - is movzbl right? */
-	call isSpace              /* is this char a space? */
-	cmpl $1, %eax             /* did it return true? */
-	jne .Ldone                /* if not whitespace, done */
-	incq %r12                 /* advance string pointer */
+	movzbl (%r12), %edi  	/* put first char in rdi */
+	call isSpace          	/* is this char a space? */
+	cmpl $1, %eax         	/* did it return true? */
+	jne .Ldone             	/* if not whitespace, done */
+	incq %r12              	/* advance string pointer */
 	jmp .LwhileTop
 .Ldone:
-	cmpb $0, (%r12)          /* check if r12 points to null terminator */
-	je .LreturnNull 
-	movq %r12, %rax           /* put string pointer in return register */
-	popq %r12                /*  restore %r12 */
+	cmpb $0, (%r12)      	/* check if r12 points to null terminator */
+	je .LreturnNull 	/* if equal, return from skipws */
+	movq %r12, %rax        	/* put string pointer in return register */
+	popq %r12             	/*  restore %r12 */
 	ret
 .LreturnNull:
-	movq $0, %rax            /* put NULL (0) in return register */
-	popq %r12                /*  restore %r12 */
-	ret
+	movq $0, %rax          	/* put NULL (0) in return register */
+	popq %r12              	/*  restore %r12 */
+	ret			/* return rax */
 
 
 /*
@@ -172,30 +170,30 @@ skipws:
  */
 	.globl tokenType
 tokenType:
-	movzbq (%rdi), %r11 	/*which registers to use? char register?*/ // we can put it as an long in r11
-	cmp $42, %r11 /* is '*' */      // indenting? lol
-	je .LisOp
-        cmp $43, %r11 /* is '+' */
-        je .LisOp
-        cmp $45, %r11 /* is '-' */
-        je .LisOp
-        cmp $47, %r11 /* is '/' */
-        je .LisOp
-	subq $8, %rsp              /* align stack pointer */
-       	movzbl (%rdi), %edi       /* put first char in rdi - is movzbl right? */
-        call isDigit              /* use isDigit to check if char is a number*/
-	addq $8, %rsp             /* restore stack pointer */
-        cmp $1, %eax             /* did it return true? */
-        je .LisInt                /* if isDigit true, jump to .LisInt to return TOK_INT*/
+	movzbq (%rdi), %r11	/* save first character of string %r11 */
+	cmp $42, %r11 		/* check if first char is '*' */
+	je .LisOp		/* jump if equal */
+        cmp $43, %r11 		/* check if %r11 is '+' */
+        je .LisOp		/* jump if equal */
+        cmp $45, %r11		/* check if %r11 is '-' */
+        je .LisOp		/* jump if equal */
+        cmp $47, %r11 		/* check if %r11 is '/' */
+        je .LisOp		/* jummp if equal */
+	subq $8, %rsp          	/* align stack pointer */
+       	movzbl (%rdi), %edi    	/* put first char in rdi - is movzbl right? */
+        call isDigit           	/* use isDigit to check if char is a number*/
+	addq $8, %rsp          	/* restore stack pointer */
+        cmp $1, %eax          	/* did it return true? */
+        je .LisInt            	/* if isDigit true, jump to .LisInt to return TOK_INT*/
 	jmp .LisUn		/* if not operator or digit, token is undefined */
 .LisInt: 
-	movl $TOK_INT, %eax 
+	movl $TOK_INT, %eax 	/* move TOK_INT to be returned */
 	ret
 .LisOp:
-	movl $TOK_OP, %eax
+	movl $TOK_OP, %eax	/* move TOK_OP to be returned */
 	ret
 .LisUn: 
-	movl $TOK_UNKNOWN, %eax
+	movl $TOK_UNKNOWN, %eax	/* move TOK_UNKNOWN to be returned */
 	ret
 
 /*
@@ -216,26 +214,26 @@ tokenType:
  */
 	.globl consumeInt
 consumeInt:
-        pushq %r12               /* preserve the value of r12, aligns stack pointer */
-        movq %rdi, %r12          /* store string pointer in r12 */
+        pushq %r12          	/* preserve the value of r12, aligns stack pointer */
+        movq %rdi, %r12       	/* store string pointer in r12 */
 	pushq %r13
 	movq %rsi, %r13		/* save pval pointer into %r13 */
-	movq $intInputFormat, %rsi /* save sscanf input format into %rsi */
+	movq $intInputFormat, %rsi	/* save sscanf input format into %rsi */
 	movq %r13, %rdx		/* save pval pointer into third argument %rdx */
 	subq $8, %rsp		/* align stack pointer */
 	call sscanf 		/* save int into pval (in %r13) */
 .LwhileInt:
-        movzbl (%r12), %edi       /* put first char in rdi */
-        call isDigit              /* is this char a space? */
-        cmpl $0, %eax             /* did it return false? */
-        je .LdoneFinding                /* if not digit, jump to done */
-        incq %r12                 /* advance string pointer */
+        movzbl (%r12), %edi    	/* put first char in rdi */
+        call isDigit          	/* is this char a space? */
+        cmpl $0, %eax          	/* did it return false? */
+        je .LdoneFinding     	/* if not digit, jump to done */
+        incq %r12             	/* advance string pointer */
         jmp .LwhileInt
 .LdoneFinding:
 	addq $8, %rsp 		/* align stack pointer */
-        movq %r12, %rax           /* put string pointer in return register */
+        movq %r12, %rax        	/* put string pointer in return register */
 	popq %r13		/* restore %r13 */
-        popq %r12                /*  restore %r12 */
+        popq %r12              	/*  restore %r12 */
         ret
 /*
  *  Casey
@@ -252,7 +250,7 @@ consumeInt:
  */
 	.globl consumeOp
 consumeOp:
-	movzbl (%rdi), %r10d      /* store operator temporarily */
+	movzbl (%rdi), %r10d      	/* store operator temporarily */
 	movl %r10d, (%rsi)		/* store operator in rsi's memory address */
 	addq $1, %rdi			/* advance string pointer */
 	movq %rdi, %rax
@@ -277,17 +275,16 @@ consumeOp:
  */
 	.globl stackPush
 stackPush:
-	subq $8, %rsp				    /* align stack pointer */
-	movq (%rsi), %r10       		/* store current stack count in r10 */
+	subq $8, %rsp			/* align stack pointer */
+	movq (%rsi), %r10       	/* store current stack count in r10 */
 	cmpq $MAX_STACK, %r10          	/* compare current size (r10) to max stack */
 	jl .Lpush                       /* if curSize < max, jump to push */
 	movq $errorMsgStackFull, %rdi   /* move address of error message for fatalError */
 	call fatalError                 /* should not return */
 .Lpush:
-	movq (%rsi), %r10				/* store stack length in r10 */
-	movq %rdx, (%rdi, %r10, 8)		/* push given value to the top of the stack */
-	incq (%rsi)						/* incriment stack count */
-	addq $8, %rsp					/* align stack pointer */
+	movq %rdx, (%rdi, %r10, 8)	/* push given value to the top of the stack */
+	incq (%rsi)			/* increment stack count */
+	addq $8, %rsp			/* align stack pointer */
 	ret
 
 /*
@@ -307,13 +304,13 @@ stackPush:
  */
 	.globl stackPop
 stackPop:
-	pushq %r12         /* using a callee saved register and aligning stack pointer */
-	movq %rdi, %r12     /* put address of stack in %r12 */
+	pushq %r12       	/* using a callee saved register and aligning stack pointer */
+	movq %rdi, %r12     	/* put address of stack in %r12 */
 	movq (%rsi), %r11	/* put stack size in %r11 */
-	cmp $0, %r11    // cannot rely on %r11 or %rsi to have the same value after call, but fatal error won't return!
-	jg .Lpop
-	movq $errorMsgStackEmpty, %rdi
-	call fatalError
+	cmp $0, %r11  		/* check if stack is empty */
+	jg .Lpop		/* if count > 0, pop */
+	movq $errorMsgStackEmpty, %rdi	/* if count <= 0, put error message in first argument register */
+	call fatalError		/* if count <=0, call fatalError */
 .Lpop:
 	subq $1, %r11 	/* decrement count */
 	movq %r11, (%rsi) /*move r11 value to count */
@@ -334,41 +331,40 @@ stackPop:
  *   the result of applying the operator to the operands
  */
 	.globl evalOp
-evalOp:               // no function calls, don't need to align stack pointer
-    movl %edi, %r11d      /*which registers to use? char register?*/
-	movq %rsi, %r10
-	movq %rdx, %r9
-    	cmp $42, %r11d /* is '*' */
-	je .LMult
-    	cmp $43, %r11d /* is '+' */
-    	je .LAdd
-    	cmp $45, %r11d /* is '-' */
-    	je .LSub
-    	cmp $47, %r11d /* is '/' */
-    	je .LDiv
+evalOp:    
+  	movl %edi, %r11d     	/* save op into %r11d */
+	movq %rsi, %r10		/* save left into %r10 */
+	movq %rdx, %r9		/* save right into %r9 */
+    	cmp $42, %r11d		/* check if op is '*' */
+	je .LMult		/* if op is '*' then multiply */
+    	cmp $43, %r11d 		/* check if op is '+' */
+    	je .LAdd		/* if op is '+' then add */
+    	cmp $45, %r11d 		/* check if op is '-' */
+    	je .LSub		/* if equal, subtract */
+    	cmp $47, %r11d		/* check if op is '/'*/
+    	je .LDiv		/* if equal, divide */
 .LAdd:			
-	addq %r10, %r9
-	movq %r9, %rax
+	addq %r10, %r9		/* add left and right */
+	movq %r9, %rax		/* result stored in r9 */
 	ret
 .LMult: 
-	imulq %r10, %r9
-	movq %r9, %rax
-	ret
+	imulq %r10, %r9		/* signed multiplication of left and right */
+	movq %r9, %rax		/* move result from r9 to rax  */
+	ret			/* return rax */
 .LSub:
-	subq %r9, %r10
-	movq %r10, %rax
-        ret
+	subq %r9, %r10		/* subtraction of left and right */
+	movq %r10, %rax		/* move result from r10 to rax */
+        ret			
 .LDiv: 
-	cmp $0, %r9
-	je .LDivByZero
-	//movq $0, %rdx
-	movq %r10, %rax
-	cqto 
-	idivq %r9
-    	ret
+	cmp $0, %r9		/* check if right is 0 - avoid divide by 0 */
+	je .LDivByZero		/* if equal, jump and send error */
+	movq %r10, %rax		/* store left in r10 */
+	cqto 			/* sign extend rax to rdx:rax */
+	idivq %r9		/* signed integer division - left / right */
+    	ret			/* return result stored in r9 */
 .LDivByZero:
-	movq $errorMsgDivByZero, %rdi
-	subq $8, %rsp
+	movq $errorMsgDivByZero, %rdi	/*send error message as first argument to fatalError */
+	subq $8, %rsp			/* align stack pointer */
 	call fatalError
 
 /* vim:ft=gas:
