@@ -320,6 +320,7 @@ void testEval(TestObjs *objs) {
 	ASSERT(190L == eval("0 1 2 3 4 5 6 7 8 9 10 11 12 + - * 1 2 3 4 5 6 7 8 9 10 + + + + - - - - * - - * + - + - + - - 2 / 3 /"));
 	/* make sure eval can handle arbitrary whitespace */
 	ASSERT(6L == eval("  1  \t 5\t\t + \t"));
+	ASSERT(-362L == eval("9 13 + 2 5 + 2 19 - + * 13 + 6 8 19 8 12 + + / + + 19 5 - 11 13 * - 9 14 + 15 9 - + * 10 * 15 5 / 6 4 - 2 3 * - + 14 18 + 8 - 13 4 * 17 4 / * + + / +")); 
 }
 
 void testEvalInvalid(TestObjs *objs) {
