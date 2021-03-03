@@ -111,8 +111,7 @@ eval:
         addq $200, %rsp      /* align stack pointer */
         popq %r12            /* restore %r12 */
         popq %rbp            /* restore %rbp */
-	
-ret
+	ret
 
 /* vim:ft=gas:
  */
