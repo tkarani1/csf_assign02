@@ -53,10 +53,12 @@ expect 4 '8 9-5+'       # "negative numbers" in expression
 expect_error '	   '    # expression is only whitespace
 expect_error ''         # expression is an empty string
 expect_error '6 0 /'    # division by 0
-expect 20 '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 +++++++++++++++++++'  # fill stack, then expty it
-expect_error '-5 + -5 +1' #operator when stack empty
-expect_error '5 % 5' # % not defined
-expect -362 '9 13 + 2 5 + 2 19 - + * 13 + 6 8 19 8 12 + + / + + 19 5 - 11 13 * - 9 14 + 15 9 - + * 10 * 15 5 / 6 4 - 2 3 * - + 14 18 + 8 - 13 4 * 17 4 / * + + / +' # really long expression
+expect 20 '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 +++++++++++++++++++'  # fill stack, then empty it
+expect_error '-5 + -5 +1'  # operator when stack empty
+expect_error '5 % 5'  # % not defined
+expect 1142 '0 1 2 3 4 5 6 7 8 9 10 11 12 + - * 1 2 3 4 5 6 7 8 9 10 + + + + - - - - * - - * + - + - + - -'  # long test
+expect -362 '9 13 + 2 5 + 2 19 - + * 13 + 6 8 19 8 12 + + / + + 19 5 - 11 13 * - 9 14 + 15 9 - + * 10 * 15 5 / 6 4 - 2 3 * - + 14 18 + 8 - 13 4 * 17 4 / * + + / +' # another long test
+
 #######################################################################
 # End of tests
 #######################################################################
