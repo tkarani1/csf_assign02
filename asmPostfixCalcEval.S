@@ -34,8 +34,12 @@ eval:
         movq %rax, %r12       /* store whitespace-less string pointer in %r12 */
         subq $196, %rsp       /* memory for: stack (20 longs), count, left, right, pval, (longs), and op (int) */
         movq %rsp, %rbp       /* pointer to allocated memory on stack */
-        subq $4, %rsp         /* align stack pointer */
-        movq $0, 160(%rbp)    /* set count = 0 */
+        subq $4, %rsp         /* align stack pointer (2 pushes and 200 sub -> total offset 216, 216 % 16 = 8 */
+        movq $0, 160(%rbp)    /* set count to 0 */
+        movq $0, 168(%rbp)    /* set left to 0 */
+        movq $0, 176(%rbp)    /* set right to 0 */
+        movq $0, 184(%rbp)    /* set pval to 0 */
+        movl $48, 192(%rbp)    /* set op to '0' */
 	jmp .LwhilePostfix
 
 .LwhilePostfix:
@@ -51,7 +55,7 @@ eval:
 	je .LInt
 	cmpl $TOK_UNKNOWN, %eax	/*check if tokenType is unkown - should this be unconditional? */
 	je .LUnknown
-
+        jmp .LUnknown
 .LOp:
 	movq %r12, %rdi		/* string pointer is first argument of consumeOp */
 	leaq 192(%rbp), %rsi    /* put address of op in second argument register */
@@ -69,9 +73,10 @@ eval:
         movq 168(%rbp), %rsi     /* move left operand into second argument register */
         movq 176(%rbp), %rdx     /* move right operand into third argument register */
         call evalOp              /* result is in %rax */
+        movq %rax, 184(%rbp)     /* store result of the oepration in pval */
         movq %rbp, %rdi          /* stack is first argument of stackPush */
         leaq 160(%rbp), %rsi     /* address of count is second argument of stackPush */
-        movq %rax, %rdx          /* result of evalOp gets pushed onto stack! */
+        movq 184(%rbp), %rdx          /* result of evalOp gets pushed onto stack! */
         call stackPush 
         movq %r12, %rdi          /* move string pointer to first agument for skipws */
 	call skipws
