@@ -361,8 +361,9 @@ evalOp:               // no function calls, don't need to align stack pointer
 .LDiv: 
 	cmp $0, %r9
 	je .LDivByZero
-	movq $0, %rdx
+	//movq $0, %rdx
 	movq %r10, %rax
+	cqto 
 	idivq %r9
     	ret
 .LDivByZero:

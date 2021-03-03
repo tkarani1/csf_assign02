@@ -26,8 +26,8 @@ result: .string "Result is: %ld\n"
 main:
 	subq $8, %rsp         /* align stack pointer */
 	cmpl $2, %edi          /* compare argc to 2  ??*/
-	je .LwrongNumArgs
-	movq 1(%rsi), %rdi     /* move pointer from argv[1] to %rdi */
+	jne .LwrongNumArgs
+	movq 8(%rsi), %rdi     /* move pointer from argv[1] to %rdi */
 	call eval
 	movq %rax, %rsi       /* move result from eval into second arugment for printf */
 	movq $result, %rdi    /* move string format to first argument for printf */
