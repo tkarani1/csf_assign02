@@ -104,8 +104,8 @@ eval:
 .Lsuccess:
         movq (%rbp), %rax    /* move last value on stack to return register */
         addq $200, %rsp      /* align stack pointer */
-        popq %rbp            /* restore %rbp */
         popq %r12            /* restore %r12 */
+        popq %rbp            /* restore %rbp */
 	
 ret
 
