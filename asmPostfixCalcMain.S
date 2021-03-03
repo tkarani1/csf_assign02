@@ -24,19 +24,21 @@ result: .string "Result is: %ld\n"
  */
 	.globl main
 main:
-	//pushq %rbp
-	cmpl $2, %rdi          /* compare argc to 2  ??*/
+	subq $8, %rsp         /* align stack pointer */
+	cmpl $2, %edi          /* compare argc to 2  ??*/
 	je .LwrongNumArgs
 	movq 1(%rsi), %rdi     /* move pointer from argv[1] to %rdi */
 	call eval
 	movq %rax, %rsi       /* move result from eval into second arugment for printf */
 	movq $result, %rdi    /* move string format to first argument for printf */
 	call printf
+	addq $8, %rsp        /* restore stack pointer */
 	movq $0, %rax
 	ret
 .LwrongNumArgs:
 	movq $errorMsgNumArgs, %rdi
 	call printf
+	addq $8, %rsp        /* restore stack pointer */
 	movq $1, %rax
 	ret
 
