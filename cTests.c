@@ -313,7 +313,8 @@ void testEval(TestObjs *objs) {
 	ASSERT(3L == eval("4 1 -"));
 	ASSERT(33L == eval("11 3 *"));
 	ASSERT(27L == eval("3 4 5 + *"));
-
+	ASSERT(42L == eval("6 6 6 6 6 6 6 + + + + + +"));
+	ASSERT(20L == eval("1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 +++++++++++++++++++"));
 	/* make sure eval can handle arbitrary whitespace */
 	ASSERT(6L == eval("  1  \t 5\t\t + \t"));
 }
@@ -348,4 +349,21 @@ void testEvalInvalid(TestObjs *objs) {
                 printf("good, stack underflow handled...");
         }
 
+	/* stack overflow */
+        if (sigsetjmp(exitBuf, 1) == 0) {
+                eval("1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1");
+                FAIL("stack overflow not handled");
+        } else {
+                /* good, expected failure */
+                printf("good, stack overflow handled...");
+        }
+
+	/* empty string */
+        if (sigsetjmp(exitBuf, 1) == 0) {
+                eval("");
+                FAIL("empty string not handled");
+        } else {
+                /* good, expected failure */
+                printf("good, empty string handled...");
+        }
 }
