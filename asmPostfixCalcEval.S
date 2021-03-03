@@ -52,8 +52,6 @@ eval:
 	je .LOp 
 	cmpl $TOK_INT, %eax	/*check if tokenType from result is a number */
 	je .LInt
-	cmpl $TOK_UNKNOWN, %eax	/*check if tokenType is unkown - should this be unconditional? */
-	je .LUnknown
         jmp .LUnknown
 .LOp:
 	movq %r12, %rdi		/* string pointer is first argument of consumeOp */
