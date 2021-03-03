@@ -27,10 +27,10 @@ errorMsgInvalidString: .string "invalid expression"
  */
 	.globl eval
 eval:
-        pushq %rbp            /* store callee-saved %rbp  */
+        pushq %rbp            /* store callee-saved %rbp and align stack pointer */
 	movq %rdi, %rdi
 	call skipws           /* string pointer should already be in %rdi */
-        pushq %r12            /* store callee-saved %r12 and align stack pointer */
+        pushq %r12            /* store callee-saved %r12 */
         movq %rax, %r12       /* store whitespace-less string pointer in %r12 */
         subq $196, %rsp       /* memory for: stack (20 longs), count, left, right, pval, (longs), and op (int) */
         movq %rsp, %rbp       /* pointer to allocated memory on stack */
@@ -78,7 +78,7 @@ eval:
         movq %rax, %r12          /* move updated string pointer back to %r12 */
 	jmp .LwhilePostfix	
 
-.LInt:         // r12 (string ptr) should aready be in rdi
+.LInt:        
 	movq %r12, %rdi          /* pass address of string to first argument register */
         leaq 184(%rbp), %rsi     /* pass address of pval in second argument register */
         call consumeInt

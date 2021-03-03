@@ -7,7 +7,7 @@
 
 /* TODO: add string constants and other read-only data here */
 errorMsgNumArgs: .string "Wrong number of arguments\n"
-result: .string "REsult is: %ld\n"
+result: .string "Result is: %ld\n"
 
 
 .section .text
@@ -24,10 +24,8 @@ result: .string "REsult is: %ld\n"
  */
 	.globl main
 main:
-	/* TODO: implement */
-	pushq %rbp
-
-	cmpl $2, %esp          /* compare argc to 2  ??*/
+	//pushq %rbp
+	cmpl $2, %rdi          /* compare argc to 2  ??*/
 	je .LwrongNumArgs
 	movq 1(%rsi), %rdi     /* move pointer from argv[1] to %rdi */
 	call eval

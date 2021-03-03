@@ -312,9 +312,12 @@ void testEval(TestObjs *objs) {
 	ASSERT(2L == eval("1 1 +"));
 	ASSERT(3L == eval("4 1 -"));
 	ASSERT(33L == eval("11 3 *"));
+	ASSERT(5L == eval("17 3 /"));
 	ASSERT(27L == eval("3 4 5 + *"));
 	ASSERT(42L == eval("6 6 6 6 6 6 6 + + + + + +"));
 	ASSERT(20L == eval("1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 +++++++++++++++++++"));
+	ASSERT(1142L == eval("0 1 2 3 4 5 6 7 8 9 10 11 12 + - * 1 2 3 4 5 6 7 8 9 10 + + + + - - - - * - - * + - + - + - -"));
+	ASSERT(190L == eval("0 1 2 3 4 5 6 7 8 9 10 11 12 + - * 1 2 3 4 5 6 7 8 9 10 + + + + - - - - * - - * + - + - + - - 2 / 3 /"));
 	/* make sure eval can handle arbitrary whitespace */
 	ASSERT(6L == eval("  1  \t 5\t\t + \t"));
 }
@@ -365,5 +368,14 @@ void testEvalInvalid(TestObjs *objs) {
         } else {
                 /* good, expected failure */
                 printf("good, empty string handled...");
+        }
+
+	/* division by 0 */
+        if (sigsetjmp(exitBuf, 1) == 0) {
+                eval("5 0 /");
+                FAIL("division by 0 not handled");
+        } else {
+                /* good, expected failure */
+                printf("good, division by 0 handled...");
         }
 }
