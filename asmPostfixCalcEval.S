@@ -28,7 +28,6 @@ errorMsgInvalidString: .string "invalid expression"
 	.globl eval
 eval:
         pushq %rbp            /* store callee-saved %rbp and align stack pointer */
-	movq %rdi, %rdi
 	call skipws           /* string pointer should already be in %rdi */
         pushq %r12            /* store callee-saved %r12 */
         movq %rax, %r12       /* store whitespace-less string pointer in %r12 */

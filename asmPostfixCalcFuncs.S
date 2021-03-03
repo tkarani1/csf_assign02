@@ -338,14 +338,14 @@ evalOp:               // no function calls, don't need to align stack pointer
     movl %edi, %r11d      /*which registers to use? char register?*/
 	movq %rsi, %r10
 	movq %rdx, %r9
-    cmp $42, %r11d /* is '*' */
+    	cmp $42, %r11d /* is '*' */
 	je .LMult
-    cmp $43, %r11d /* is '+' */
-    je .LAdd
-    cmp $45, %r11d /* is '-' */
-    je .LSub
-    cmp $47, %r11d /* is '/' */
-    je .LDiv
+    	cmp $43, %r11d /* is '+' */
+    	je .LAdd
+    	cmp $45, %r11d /* is '-' */
+    	je .LSub
+    	cmp $47, %r11d /* is '/' */
+    	je .LDiv
 .LAdd:			
 	addq %r10, %r9
 	movq %r9, %rax
@@ -364,7 +364,7 @@ evalOp:               // no function calls, don't need to align stack pointer
 	movq $0, %rdx
 	movq %r10, %rax
 	idivq %r9
-    ret
+    	ret
 .LDivByZero:
 	movq $errorMsgDivByZero, %rdi
 	subq $8, %rsp
