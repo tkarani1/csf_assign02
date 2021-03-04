@@ -1,6 +1,6 @@
 /*
  * postfix calculator (assembly language version)
- * eval function implementation
+ * function implementations
  * CSF Assignment 2
  * C. Levitt
  * clevitt1@jh.edu
@@ -60,6 +60,7 @@ addPositive:
 	addq $8, %rsp                /* restore stack pointer */
 	ret
 
+
 /*
  * Casey
  * fatalError - print an error message an exit with an exit code of 1.
@@ -72,14 +73,15 @@ addPositive:
 	.globl fatalError
 fatalError:
 	/* note that this function should not return */
-	pushq %r12			/* callee-saved, also aligns stack pointer */           
-	movq %rdi, %r12            	/*  temporarily store msg pointer in r12 */
-	movq $errorMsgStart, %rdi   	/* move "Error: " pointer to 1st arg register */
+	pushq %r12					/* callee-saved, also aligns stack pointer */           
+	movq %rdi, %r12            	/*  store error msg body in r12 */
+	movq $errorMsgStart, %rdi   /* move "Error: " pointer to 1st arg for printf */
 	call printf
-	movq %r12, %rdi             	/* move msg pointer to 1st arg register */
+	movq %r12, %rdi             /* move error msg body to 1st arg for printf */
 	call printf
-	movq $1, %rdi
+	movq $1, %rdi				/* calling exit with code 1 */
 	call exit
+
 
 /* Casey
  * isSpace - tests a character code to determine whether or not it
@@ -97,13 +99,13 @@ fatalError:
 	.globl isSpace
 isSpace:
 	cmpl $32, %edi         	/* compare c to 32 (space) */
-	je .LreturnTrue       	/* if equal, jump to return true */
-	cmpl $9, %edi          	/* compare val to 9 (tab) */
-	je .LreturnTrue       	/* if equal, jump to return true */
+	je .LreturnTrue       	/* if equal, return true */
+	cmpl $9, %edi          	/* compare c to 9 (tab) */
+	je .LreturnTrue       	/* if equal, return true */
 	movl $0, %eax          	/* fall through to return false */
 	ret
 .LreturnTrue:
-	movl $1, %eax
+	movl $1, %eax          /* returns 1 if c is whitespace */
 	ret
 
 /*
@@ -144,25 +146,25 @@ isDigit:
  */
 	.globl skipws
 skipws:
-	pushq %r12     		/* preserve the value of r12, aligns stack pointer */
-	movq %rdi, %r12       	/* store string pointer in r12 */
-.LwhileTop:
-	movzbl (%r12), %edi  	/* put first char in rdi */
-	call isSpace          	/* is this char a space? */
-	cmpl $1, %eax         	/* did it return true? */
+	pushq %r12     			/* preserve the value of r12, aligns stack pointer */
+	movq %rdi, %r12       	/* r12 will be string iterator */
+.LwhileTop:					/* loop traversing string */
+	movzbl (%r12), %edi  	/* put the character in first arg for isSpace */
+	call isSpace       
+	cmpl $1, %eax         	/* is this character a space? */
 	jne .Ldone             	/* if not whitespace, done */
 	incq %r12              	/* advance string pointer */
 	jmp .LwhileTop
 .Ldone:
-	cmpb $0, (%r12)      	/* check if r12 points to null terminator */
-	je .LreturnNull 	/* if equal, return from skipws */
+	cmpb $0, (%r12)      	/* check if our string iterator is at null terminator */
+	je .LreturnNull 		/* if equal, return NULL */
 	movq %r12, %rax        	/* put string pointer in return register */
 	popq %r12             	/*  restore %r12 */
 	ret
 .LreturnNull:
 	movq $0, %rax          	/* put NULL (0) in return register */
 	popq %r12              	/*  restore %r12 */
-	ret			/* return rax */
+	ret						/* return rax */
 
 
 /*
@@ -259,10 +261,10 @@ consumeInt:
  */
 	.globl consumeOp
 consumeOp:
-	movzbl (%rdi), %r10d      	/* store operator temporarily */
-	movl %r10d, (%rsi)		/* store operator in rsi's memory address */
+	movzbl (%rdi), %r10d    /* get operator from memory, store temporarily */
+	movl %r10d, (%rsi)		/* store operator in op */
 	addq $1, %rdi			/* advance string pointer */
-	movq %rdi, %rax
+	movq %rdi, %rax         /* return advanced string pointer */
 	ret
 
 /*
@@ -284,16 +286,16 @@ consumeOp:
  */
 	.globl stackPush
 stackPush:
-	subq $8, %rsp			/* align stack pointer */
-	movq (%rsi), %r10       	/* store current stack count in r10 */
-	cmpq $MAX_STACK, %r10          	/* compare current size (r10) to max stack */
-	jl .Lpush                       /* if curSize < max, jump to push */
+	subq $8, %rsp					/* align stack pointer */
+	movq (%rsi), %r10       		/* store current stack count in r10 */
+	cmpq $MAX_STACK, %r10          	/* compare current size (r10) to max stack size */
+	jl .Lpush                       /* if curSize < max, jump to push - otherwise, fall through to fatalError */
 	movq $errorMsgStackFull, %rdi   /* move address of error message for fatalError */
 	call fatalError                 /* should not return */
 .Lpush:
-	movq %rdx, (%rdi, %r10, 8)	/* push given value to the top of the stack */
-	incq (%rsi)			/* increment stack count */
-	addq $8, %rsp			/* align stack pointer */
+	movq %rdx, (%rdi, %r10, 8)		/* push given value to the top of the stack */
+	incq (%rsi)						/* increment stack count */
+	addq $8, %rsp					/* align stack pointer */
 	ret
 
 /*

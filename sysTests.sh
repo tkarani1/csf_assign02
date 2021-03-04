@@ -1,6 +1,11 @@
 #! /usr/bin/env bash
 
 # System tests for postfix calculator (can test both C and asm versions)
+# CSF Assignment 2
+# C. Levitt
+# clevitt1@jh.edu
+# T. Karani
+# tkarani1@jh.edu
 
 # Check usage
 if [ $# -ne 1 ]; then

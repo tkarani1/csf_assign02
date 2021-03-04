@@ -1,3 +1,14 @@
+/*
+ * postfix calculator (c version)
+ * function implementations
+ * CSF Assignment 2
+ * C. Levitt
+ * clevitt1@jh.edu
+ * T. Karani
+ * tkarani1@jh.edu
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "cPostfixCalc.h"

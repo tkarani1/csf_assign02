@@ -1,5 +1,10 @@
 /*
  * Unit tests for C version of postfix calculator
+* CSF Assignment 2
+ * C. Levitt
+ * clevitt1@jh.edu
+ * T. Karani
+ * tkarani1@jh.edu
  */
 
 #include <stdio.h>

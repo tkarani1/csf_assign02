@@ -1,4 +1,13 @@
 /*
+ * postfix calculator header file
+ * CSF Assignment 2
+ * C. Levitt
+ * clevitt1@jh.edu
+ * T. Karani
+ * tkarani1@jh.edu
+*/
+
+/*
  * Common header file for C version of postfix calculator:
  * these definitions also pertain to the assembly language
  * functions, since they are required to be behaviorally
