@@ -1,3 +1,12 @@
+/*
+ * postfix calculator (assembly language version)
+ * eval function implementation
+ * CSF Assignment 2
+ * C. Levitt
+ * clevitt1@jh.edu
+ * T. Karani
+ * tkarani1@jh.edu
+ */
 
 /*
  * postfix calculator (assembly language version)
