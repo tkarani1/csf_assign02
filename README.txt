@@ -16,6 +16,9 @@ Trisha implemented isDigit(), tokenType(), stackPop(), evalOp()
 
 Trisha and Casey implemented consumeInt()
 
+Milestone 3: 
+Trisha and Casey worked on asmPostfixEval and asmPostfixMain together. 
+Trisha and Casey also wrote extra tests for cTests.c and sysTests.sh 
 
 
 
